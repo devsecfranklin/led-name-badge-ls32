@@ -1,3 +1,5 @@
 wheel
+# pyusb is used in identifying the device
+pyusb 
 pyhidapi
 pillow
