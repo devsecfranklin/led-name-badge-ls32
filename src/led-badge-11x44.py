@@ -453,10 +453,11 @@ args = parser.parse_args()
 if have_pyhidapi:
   #devinfo = pyhidapi.hid_enumerate(0x0416, 0x5020)
   #dev = pyhidapi.hid_open(0x0416, 0x5020)
-  devinfo = pyhidapi.hid_enumerate(0x067b, 0x2571)
+  dev = pyhidapi.hid_open(0x067b, 0x2303)
+  devinfo = pyhidapi.hid_enumerate(0x067b, 0x2303)
 else:
   #dev = usb.core.find(idVendor=0x0416, idProduct=0x5020)
-  dev = usb.core.find(idVendor=0x067b, idProduct=0x2571)
+  dev = usb.core.find(idVendor=0x067b, idProduct=0x2303)
 
 
 if have_pyhidapi:
@@ -472,14 +473,20 @@ else:
     print("No led tag with vendorID 0x0416 and productID 0x5020 found.")
     print("Connect the led tag and run this tool as root.")
     sys.exit(1)
+
   try:
     # win32: NotImplementedError: is_kernel_driver_active
     if dev.is_kernel_driver_active(0):
       dev.detach_kernel_driver(0)
   except:
     pass
-  dev.set_configuration()
-  print("using [%s %s] bus=%d dev=%d" % (dev.manufacturer, dev.product, dev.bus, dev.address))
+
+  try:
+    dev.set_configuration()
+    print("using [%s %s] bus=%d dev=%d" % (dev.manufacturer, dev.product, dev.bus, dev.address))
+  except Exception as e:
+    print("Mistake: {}".format(e))
+    exit(1)
 
 if args.preload:
   for file in args.preload:
@@ -520,8 +527,10 @@ if len(buf) > 8192:
   sys.exit(1)
 
 if have_pyhidapi:
+  print ("Have pyhidapi")
   pyhidapi.hid_write(dev, buf)
 else:
+  print ("No pyhidapi")
   for i in range(int(len(buf)/64)):
     time.sleep(0.1)
     dev.write(1, buf[i*64:i*64+64])

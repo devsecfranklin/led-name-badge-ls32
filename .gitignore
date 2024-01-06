@@ -4,6 +4,7 @@ _autosave-*
 *.bak
 _saved_*
 *-rescue.lib
+_build/
 
 FreeCAD backup files
 *.FCStd1
