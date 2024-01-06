@@ -451,10 +451,13 @@ parser.add_argument('--mode-help', action='version', help=argparse.SUPPRESS, ver
 """ % sys.argv[0])
 args = parser.parse_args()
 if have_pyhidapi:
-  devinfo = pyhidapi.hid_enumerate(0x0416, 0x5020)
+  #devinfo = pyhidapi.hid_enumerate(0x0416, 0x5020)
   #dev = pyhidapi.hid_open(0x0416, 0x5020)
+  devinfo = pyhidapi.hid_enumerate(0x067b, 0x2571)
 else:
-  dev = usb.core.find(idVendor=0x0416, idProduct=0x5020)
+  #dev = usb.core.find(idVendor=0x0416, idProduct=0x5020)
+  dev = usb.core.find(idVendor=0x067b, idProduct=0x2571)
+
 
 if have_pyhidapi:
   if devinfo:
